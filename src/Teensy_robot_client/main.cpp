@@ -75,13 +75,9 @@ void loop()
   delay(1000);
 }
 
-// Constructor. Mainly sets up pins.
-Motor(int In1pin, int In2pin, int PWMpin, int offset, int STBYpin);
-
 // Drive in direction given by sign, at speed given by magnitude of the
 // parameter.
 void drive(int speed);
-
 // drive(), but with a delay(duration)
 void drive(int speed, int duration);
 
