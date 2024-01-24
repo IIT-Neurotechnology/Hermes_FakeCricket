@@ -1,7 +1,6 @@
 // my_functions.cpp
 #include "cinematica.h"
 #include <iostream>
-#include <array>
 #include <algorithm>
 #include <cmath>
 
@@ -21,7 +20,7 @@ std::array<int, 3> calculateMotorSpeeds(int vx, int vy, int w)
     double motor3Speed = vx * sin(alpha2 + beta) + vy * cos(alpha2 + beta) + R * w;
 
     // Find the maximum absolute speed
-    double maxSpeed = std::max({std::abs(motor1Speed), std::abs(motor2Speed), std::abs(motor3Speed), 255.0});
+    double maxSpeed = 255;
 
     // Normalize speeds to -255 to 255 range
     motor1Speed = (motor1Speed / maxSpeed) * 255;
@@ -31,3 +30,5 @@ std::array<int, 3> calculateMotorSpeeds(int vx, int vy, int w)
     // Cast to int and return as array
     return {static_cast<int>(motor1Speed), static_cast<int>(motor2Speed), static_cast<int>(motor3Speed)};
 }
+
+
