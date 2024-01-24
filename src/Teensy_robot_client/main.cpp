@@ -4,6 +4,7 @@
 // line up with function names like forward.  Value can be 1 or -1
 const int offsetA = 1;
 const int offsetB = 1;
+const int offsetC = 1;
 const int STBY = 9;
 
 // Pins for all inputs, keep in mind the PWM defines must be on PWM pins
@@ -14,11 +15,16 @@ const int STBY = 9;
 #define PWMA 5
 #define PWMB 6
 #define STBY 9
+#define CIN1 11
+#define CIN2 12
+#define PWMC 24
+#define STBY2 25
 
 Motor motor1(AIN1, AIN2, PWMA, offsetA, STBY);
 Motor motor2(BIN1, BIN2, PWMB, offsetB, STBY);
+Motor motor3(CIN1, CIN2, PWMC, offsetC, STBY2);
 
-void setup()
+    void setup()
 {
   // Initialize serial communication
   Serial.begin(9600);
@@ -45,34 +51,11 @@ void loop()
   motor2.brake();
   delay(1000);
 
-  // Use of the forward function, which takes as arguements two motors
-  // and optionally a speed.  If a negative number is used for speed
-  // it will go backwards
-  forward(motor1, motor2, 150);
+  motor3.drive(255, 1000);
+  motor3.drive(-255, 1000);
+  motor3.brake();
   delay(1000);
 
-  // Use of the back function, which takes as arguments two motors
-  // and optionally a speed.  Either a positive number or a negative
-  // number for speed will cause it to go backwards
-  back(motor1, motor2, -150);
-  delay(1000);
-
-  // Use of the brake function which takes as arguments two motors.
-  // Note that functions do not stop motors on their own.
-  brake(motor1, motor2);
-  delay(1000);
-
-  // Use of the left and right functions which take as arguements two
-  // motors and a speed.  This function turns both motors to move in
-  // the appropriate direction.  For turning a single motor use drive.
-  left(motor1, motor2, 100);
-  delay(1000);
-  right(motor1, motor2, 100);
-  delay(1000);
-
-  // Use of brake again.
-  brake(motor1, motor2);
-  delay(1000);
 }
 
 // Drive in direction given by sign, at speed given by magnitude of the
@@ -112,4 +95,4 @@ void left(Motor left, Motor right, int speed);
 void right(Motor left, Motor right, int speed);
 
 // This function takes 2 motors and and brakes them
-void brake(Motor motor1, Motor motor2);
+void brake(Motor motor1, Motor motor2); 
