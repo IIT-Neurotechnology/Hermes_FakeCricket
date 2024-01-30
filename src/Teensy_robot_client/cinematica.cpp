@@ -19,14 +19,6 @@ std::array<int, 3> calculateMotorSpeeds(int vx, int vy, int w)
     double motor2Speed = vx * sin(alpha1 + beta) + vy * cos(alpha1 + beta) + R * w;
     double motor3Speed = vx * sin(alpha2 + beta) + vy * cos(alpha2 + beta) + R * w;
 
-    // Find the maximum absolute speed
-    double maxSpeed = 255;
-
-    // Normalize speeds to -255 to 255 range
-    motor1Speed = (motor1Speed / maxSpeed) * 255;
-    motor2Speed = (motor2Speed / maxSpeed) * 255;
-    motor3Speed = (motor3Speed / maxSpeed) * 255;
-
     // Cast to int and return as array
     return {static_cast<int>(motor1Speed), static_cast<int>(motor2Speed), static_cast<int>(motor3Speed)};
 }
