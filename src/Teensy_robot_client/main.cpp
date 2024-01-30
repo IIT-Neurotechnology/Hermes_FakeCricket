@@ -69,9 +69,15 @@ void setMotorsSpeed(int vx, int vy, int w)
   Serial.println(motorSpeeds[2]);
   motor1.drive(motorSpeeds[0]);
   motor2.drive(motorSpeeds[1]);
-  motor3.drive(motorSpeeds[2]);
+  motor3.drive(motorSpeeds[2]+50);
 
 }
+
+// Drive in direction given by sign, at speed given by magnitude of the
+// parameter.
+void drive(int speed);
+// drive(), but with a delay(duration)
+void drive(int speed, int duration);
 
 extern "C"
 {
