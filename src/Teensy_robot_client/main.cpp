@@ -61,15 +61,16 @@ void setMotorsSpeed(int vx, int vy, int w)
 {
   std::array<int, 3> motorSpeeds = calculateMotorSpeeds(vx, vy, w);
 
-  motor1.drive(motorSpeeds[0]);
-  motor2.drive(motorSpeeds[1]);
-  motor3.drive(motorSpeeds[2]);
   Serial.print("Motor 1 Speed: ");
   Serial.println(motorSpeeds[0]);
   Serial.print("Motor 2 Speed: ");
   Serial.println(motorSpeeds[1]);
   Serial.print("Motor 3 Speed: ");
   Serial.println(motorSpeeds[2]);
+  motor1.drive(motorSpeeds[0]);
+  motor2.drive(motorSpeeds[1]);
+  motor3.drive(motorSpeeds[2]);
+
 }
 
 extern "C"
