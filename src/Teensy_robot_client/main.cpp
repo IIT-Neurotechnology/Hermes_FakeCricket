@@ -19,7 +19,7 @@ const int  STBY2 = 25;
 #define STBY 9
 #define CIN1 11
 #define CIN2 12
-#define PWMC 24
+#define PWMC 29
 
 
 Motor motor1(AIN1, AIN2, PWMA, offsetA, STBY);
@@ -69,7 +69,7 @@ void setMotorsSpeed(int vx, int vy, int w)
   Serial.println(motorSpeeds[2]);
   motor1.drive(motorSpeeds[0]);
   motor2.drive(motorSpeeds[1]);
-  motor3.drive(motorSpeeds[2]+50);
+  motor3.drive(motorSpeeds[2]);
 
 }
 
