@@ -37,19 +37,9 @@ void setMotorsSpeed(int vx, int vy, int w);
 void loop()
 {
   // Move forward
-  setMotorsSpeed(100, 0, 0);
+  setMotorsSpeed(100,0, 0);
   delay(1000); // adjust the duration according to the required distance
-
-  // Turn left 90 degrees (if required, implement a separate function for rotation)
-  setMotorsSpeed(0, 100, 0);
-  delay(1000); // adjust the duration according to the required distance
-
-  // Move backward
   setMotorsSpeed(-100, 0, 0);
-  delay(1000); // adjust the duration according to the required distance
-
-  // Turn right 90 degrees (if required, implement a separate function for rotation)
-  setMotorsSpeed(0, -100, 0);
   delay(1000); // adjust the duration according to the required distance
 
   // Assuming the robot is now facing the original direction,
