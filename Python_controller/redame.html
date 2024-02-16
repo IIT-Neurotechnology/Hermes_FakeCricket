@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Spiegone</title>
+</head>
+<body>
+In this code, we first set up the Basler camera properties such as PixelFormat, GainAuto, ExposureAuto, and ExposureTime. We then define the region of interest (ROI) using the cv2.selectROI() function, which allows the user to select the ROI by dragging a rectangle on the screen. We then start the video capture using the StartGrabbing() function and process the frames in a while loop.
+
+Inside the loop, we retrieve the frames from the camera and perform the following operations:
+
+Convert the frame to grayscale using the cv2.cvtColor() function.
+Crop the frame to the ROI using the ROI coordinates and the slicing operator [].
+Threshold the frame using the cv2.threshold() function to separate the foreground from the background.
+Find the contours in the thresholded frame using the cv2.findContours() function.
+5
+</body>
+</html>
