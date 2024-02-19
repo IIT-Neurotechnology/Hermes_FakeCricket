@@ -1,34 +1,21 @@
+#include <Arduino.h>
 
 void setup() {
-  // initialize the serial communication
-  Serial.begin(9600);
+  Serial.begin(115200); // Start serial communication at 115200 baud rate
 }
 
 void loop() {
-  // read the input on analog pin A17
-  int analogValueA17 = analogRead(A17);
-  // map the value to -255 to 255
-  int mappedValueA17 = map(analogValueA17, 0, 1023, -245, 254);
-  // if the value is under 15, set it to 0
-  if(abs(mappedValueA17) < 15) {
-    mappedValueA17 = 0;
-  }
+  // Read joystick values from analog pins
+  int joystickX = analogRead(A17); // Joystick X-axis
+  int joystickY = analogRead(A19); // Joystick Y-axis
 
-  // read the input on analog pin A19
-  int analogValueA19 = analogRead(A19);
-  // map the value to -255 to 255
-  int mappedValueA19 = map(analogValueA19, 0, 1023, -254, 254);
-  // if the value is under 15, set it to 0
-  if(abs(mappedValueA19) < 15) {
-    mappedValueA19 = 0;
-  }
+  // Map the analog read values from the joystick (0 to 1023) to velocity (-1.0 to 1.0)
+  // Apply dead zone correction: if the absolute value is under 15, set velocity to 0
+  float vx = abs(joystickX - 512) < 15 ? 0 : map(joystickX, 0, 1023, -100, 100) / 100.0;
+  float vy = abs(joystickY - 512) < 15 ? 0 : map(joystickY, 0, 1023, -100, 100) / 100.0;
 
-  // print the values to the serial port
-  Serial.print("A17: ");
-  Serial.print(mappedValueA17);
-  Serial.print(" , A19: ");
-  Serial.println(mappedValueA19);
-
-  // delay before the next reading
-  delay(100);
+  // Package the vx and vy values as binary data
+  Serial.write((byte*)&vx, sizeof(vx));
+  Serial.write((byte*)&vy, sizeof(vy));
+  delay(10);
 }
