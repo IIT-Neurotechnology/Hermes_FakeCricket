@@ -61,7 +61,7 @@ void loop() {
 
 
 
-void parsePacketData(const char* packetData) {d
+void parsePacketData(const char* packetData) {
   String str = packetData;
   str = str.substring(2, str.length() - 1);  // Remove the outer square brackets
   int count = 0;

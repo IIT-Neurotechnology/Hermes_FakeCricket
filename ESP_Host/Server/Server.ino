@@ -8,9 +8,6 @@ const char* host = "172.20.10.4"; // IP address of the receiver
 const int port = 32345; // UDP port to send to
 int LED_BLINK = D5;
 int LED_D2 = D2;
-int SWITCH_D7 = D7;
-int JOYSTICK_X = A2; // analog input for the x-axis of the joystick
-int JOYSTICK_Y = A3; // analog input for the y-axis of the joystic
 unsigned long switchPressedTime = 0;
 const int manualModeSwitchTime = 3000;
 bool manualMode = false;
@@ -24,7 +21,6 @@ void setup() {
   pinMode(LED_BLINK, OUTPUT);
   pinMode(LED_D2, OUTPUT);
   digitalWrite(LED_D2, LOW);
-  pinMode(SWITCH_D7, INPUT_PULLUP); // Set D7 as input with pull-up resistor
   
   WiFi.mode(WIFI_STA); // put ESP8266 into client mode
   WiFi.begin(ssid, password);
@@ -48,26 +44,10 @@ void setup() {
 }
 
 void loop() {
-  if (digitalRead(SWITCH_D7) == HIGH) { // if the switch is closed
-    switchPressedTime = millis(); // remember the time it was closed
-    manualMode = false; // reset manual mode
-  } else if (millis() - switchPressedTime >= manualModeSwitchTime) { // if the switch has been open for more than 3 seconds
-    manualMode = true; // enter manual mode
-  }
 
   if (manualMode) {
-    digitalWrite(LED_D2, HIGH); // turn off LED on D2
-    Serial.println("manual mode");
-   // read joystick values
-    int joystickX = analogRead(JOYSTICK_X);
-    int joystickY = analogRead(JOYSTICK_Y);
-
-    // print joystick values
-    Serial.print("Joystick X: ");
-    Serial.println(joystickX);
-    Serial.print("Joystick Y: ");
-    Serial.println(joystickY);
-  } else {
+  } 
+  else {
     digitalWrite(LED_D2, LOW); // turn off LED on D2
     if (Serial.available()) {
       String str = Serial.readStringUntil('\n');
