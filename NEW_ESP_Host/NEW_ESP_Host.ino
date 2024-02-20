@@ -8,6 +8,7 @@ const unsigned int port = 32345; // UDP port to send to
 const int LED_BLINK = D5;
 const int LED_D2 = D2;
 WiFiUDP udp;
+bool ledstatus=0;
 
 void setup() {
   Serial.begin(115200);
@@ -39,6 +40,8 @@ void loop() {
       case 0xBB: // Velocity data command
         if (Serial.available() >= 8) { // Ensure there's enough data for two floats
           float vx, vy;
+          ledstatus= !ledstatus;
+          digitalWrite(LED_D2, ledstatus); // Indicate handshake received
           Serial.readBytes((byte*)&vx, 4); // Read the first float (vx)
           Serial.readBytes((byte*)&vy, 4); // Read the second float (vy)
           // Here, implement what you want to do with vx and vy, e.g., send via UDP
@@ -46,12 +49,13 @@ void loop() {
           udp.write((byte*)&vx, 4);
           udp.write((byte*)&vy, 4);
           udp.endPacket();
-          digitalWrite(LED_D2, HIGH); // Indicate handshake received
         }
         break;
-      case 0xCC: // Turn off program command
+      default: // Turn off program command
         // Implement the shutdown or reset logic here
-        digitalWrite(LED_D2, LOW); // Use LED to indicate shutdown
+        ledstatus= !ledstatus;
+        digitalWrite(LED_D2, ledstatus); // Use LED to indicate shutdown
+        delay(100);
         break;
       // Add more cases as needed for other commands
     }

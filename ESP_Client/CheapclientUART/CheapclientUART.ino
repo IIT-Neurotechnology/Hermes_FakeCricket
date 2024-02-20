@@ -1,24 +1,19 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-#include <string.h>
-#include <Wire.h>
-#include <SoftwareSerial.h>
 
-//Receiver sta sul robottttt
+// WiFi and UDP settings
+const char* ssid = "Robocricket_AP";
+const char* password = "Jiminy_AP";
+const unsigned int localPort = 32345;
+
 WiFiUDP UDP;
-unsigned int localPort = 32345;
 int LED_BLINK = D5;
-char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
-int values[3];  // Assuming you want to store the numbers as floats
-unsigned int count = 0;
-String valueStr = "";
-String pacchetto = packetBuffer;
 
 void setup() {
   pinMode(LED_BLINK, OUTPUT);
-  Serial.begin(9600);   // This is the UART begin function
-  WiFi.mode(WIFI_STA);                        // Set Wi-Fi mode to station (client)
-  WiFi.begin("Robocricket_AP", "Jiminy_AP");  // Replace with your hotspot SSID and password
+  Serial.begin(115200); // Initialize serial communication
+  WiFi.mode(WIFI_STA); // Set Wi-Fi mode to station (client)
+  WiFi.begin(ssid, password); // Connect to Wi-Fi
 
   while (WiFi.status() != WL_CONNECTED) {
     digitalWrite(LED_BLINK, HIGH);
@@ -28,76 +23,36 @@ void setup() {
     delay(500);
   }
   Serial.println("Client-Connected to Wi-Fi!");
-  Serial.print("Local IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("Local port: ");
-  Serial.println(localPort);
-  UDP.begin(localPort);
+  Serial.print("Local IP address: "); Serial.println(WiFi.localIP());
+  UDP.begin(localPort); // Start UDP listener on the specified port
 }
 
 void loop() {
   int packetSize = UDP.parsePacket();
-  if (packetSize) {
-    UDP.read(packetBuffer, packetSize);
-    parsePacketData(packetBuffer);
-    // Now, you can access the values using the array
-    int value1 = abs(values[0]);
-    int value2 = abs(values[1]);
-    int value3 = abs(values[2]);
-    int dir = getDirection(values[0],values[1],values[2]);
-
-    // Send the values through UART
-    Serial.write(value1);
-    Serial.write(value2);
-    Serial.write(value3);
-    Serial.write(dir);
-
-    // End the message with a newline character
-    Serial.write('\n');
+  if (packetSize >= sizeof(float) * 2) { // Ensure the packet contains at least two floats
+    float vx, vy;
+    UDP.read((char*)&vx, sizeof(vx)); // Read the first float (velocity x)
+    UDP.read((char*)&vy, sizeof(vy)); // Read the second float (velocity y)
+    
+    // You can use vx and vy directly now, for example, printing them
+    Serial.print("Velocity X: ");
+    Serial.print(vx);
+    Serial.print(", Velocity Y: ");
+    Serial.println(vy);
+    delay(1);
+        // Clear any remaining bytes in the buffer to prevent overflow
+    while (UDP.available()) {
+      UDP.read();
+    }
   }
 
   checkWiFiConnection();
 }
 
-
-
-void parsePacketData(const char* packetData) {
-  String str = packetData;
-  str = str.substring(2, str.length() - 1);  // Remove the outer square brackets
-  int count = 0;
-
-  char* token = strtok(const_cast<char*>(str.c_str()), " ");
-  while (token != NULL) {
-    values[count] = atoi(token);  // Convert the token to a float using atof()
-    token = strtok(NULL, " ");
-    count++;
-    if (count >= 3) {
-      break;
-    }
-  }
-}
-
 void checkWiFiConnection() {
   if (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(LED_BLINK, HIGH);
-    delay(100);
-    memset(values, 0, sizeof(values));
+    digitalWrite(LED_BLINK, HIGH); // Indicate lost connection
   } else {
-    digitalWrite(LED_BLINK, LOW);
+    digitalWrite(LED_BLINK, LOW); // Indicate connection is okay
   }
-}
-// Function to determine if a number is positive or negative
-byte signToBit(int num) {
-  return (num >= 0) ? 1 : 0;
-}
-
-byte getDirection(int x, int y, int z) {
-  byte direction = 0;
-
-  // Map positive/negative outcomes into a 3-bit number
-  direction |= (signToBit(x) << 2);
-  direction |= (signToBit(y) << 1);
-  direction |= signToBit(z);
-
-  return direction;
 }

@@ -17,5 +17,5 @@ void loop() {
   // Package the vx and vy values as binary data
   Serial.write((byte*)&vx, sizeof(vx));
   Serial.write((byte*)&vy, sizeof(vy));
-  delay(10);
+  delay(100);
 }
