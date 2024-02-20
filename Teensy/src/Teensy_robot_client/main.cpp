@@ -32,18 +32,28 @@ void setMotorsSpeed(int vx, int vy, int w);
     void setup()
 {
   Serial.begin(9600);
+  Serial4.begin(115200); // Initialize Serial4 (TX4/RX4) with the baud rate matching the sender
 }
 
 void loop()
 {
-  // Move forward
-  setMotorsSpeed(100,0, 0);
-  delay(1000); // adjust the duration according to the required distance
-  setMotorsSpeed(-100, 0, 0);
-  delay(1000); // adjust the duration according to the required distance
+  if (Serial4.available() >= 8)
+  {
+    float vx, vy;
+    // Read the velocities from Serial4
+    Serial4.readBytes((char *)&vx, sizeof(vx));
+    Serial4.readBytes((char *)&vy, sizeof(vy));
 
-  // Assuming the robot is now facing the original direction,
-  // the loop can continue to repeat the square pattern.
+    // Use the velocities as needed
+    setMotorsSpeed(vx*250, vy*250, 0); // Example usage
+
+    // For debugging, print the velocities to the Serial Monitor
+    Serial.print("Velocity X: ");
+    Serial.print(vx);
+    Serial.print(", Velocity Y: ");
+    Serial.println(vy);
+  }
+
 }
 
 // Helper function to set motor speeds based on desired vx, vy, and w

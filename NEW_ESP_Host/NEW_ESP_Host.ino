@@ -55,7 +55,7 @@ void loop() {
         // Implement the shutdown or reset logic here
         ledstatus= !ledstatus;
         digitalWrite(LED_D2, ledstatus); // Use LED to indicate shutdown
-        delay(100);
+        delay(10);
         break;
       // Add more cases as needed for other commands
     }

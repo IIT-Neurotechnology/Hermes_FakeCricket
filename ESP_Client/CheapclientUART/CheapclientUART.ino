@@ -35,10 +35,12 @@ void loop() {
     UDP.read((char*)&vy, sizeof(vy)); // Read the second float (velocity y)
     
     // You can use vx and vy directly now, for example, printing them
-    Serial.print("Velocity X: ");
-    Serial.print(vx);
-    Serial.print(", Velocity Y: ");
-    Serial.println(vy);
+    //Serial.print("Velocity X: ");
+    //Serial.print(vx);
+    //Serial.print(", Velocity Y: ");
+    //Serial.println(vy);
+    Serial.write((byte*)&vx, sizeof(vx));
+    Serial.write((byte*)&vy, sizeof(vy));
     delay(1);
         // Clear any remaining bytes in the buffer to prevent overflow
     while (UDP.available()) {
