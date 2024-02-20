@@ -8,7 +8,7 @@ def find_firebeetle_port():
     for port in ports:
         try:
             ser = serial.Serial(port.device, 115200, timeout=1)
-            time.sleep(2)  # Wait for the connection to establish
+            time.sleep(1)  # Wait for the connection to establish
             ser.write(b'\xAA')  # Send the byte command for identification
             ser.flush()  # Ensure the command is sent immediately
             time.sleep(0.1)  # Short delay to allow response
@@ -34,8 +34,12 @@ firebeetle_port = find_firebeetle_port()
 ser2=serial.Serial(teensy_port, 115200, timeout=1)
 
 def read_joystick_values():
-    # Wait for enough data to be available
-    if ser2.in_waiting >= 8:
+    # Check if more than 8 bytes are waiting, keep only the latest 8 bytes
+    while ser2.in_waiting > 8:
+        # Read and discard all but the last 8 bytes
+        ser2.read(ser2.in_waiting - 8)
+    
+    if ser2.in_waiting == 8:
         data = ser2.read(8)
         vx, vy = struct.unpack('<ff', data)
         return vx, vy
