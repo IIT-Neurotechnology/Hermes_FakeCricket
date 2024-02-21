@@ -8,7 +8,6 @@ const unsigned int port = 32345; // UDP port to send to
 const int LED_BLINK = D5;
 const int LED_D2 = D2;
 WiFiUDP udp;
-bool ledstatus=0;
 
 void setup() {
   Serial.begin(115200);
@@ -16,7 +15,7 @@ void setup() {
   pinMode(LED_D2, OUTPUT);
   digitalWrite(LED_D2, HIGH);
 
-  WiFi.mode(WIFI_STA); // Put ESP8266 into client mode
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -25,39 +24,43 @@ void setup() {
     digitalWrite(LED_BLINK, LOW); delay(100);
   }
   Serial.println("Connected to WiFi");
-  udp.begin(port); // Use any local port
+  udp.begin(port);
   Serial.print("Local IP address: "); Serial.println(WiFi.localIP());
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    // Check if there's more data than needed for a single command and its data
+  static bool collecting = false;
+  static byte data[8];
+  static int dataIndex = 0;
 
-    byte command = Serial.read(); // Now read the latest command byte
-    switch (command) {
-      case 0xAA: // Handshake command
-        Serial.write(0xAA); // Echo back the handshake byte
-        digitalWrite(LED_D2, LOW); // Indicate handshake received
-        break;
-      case 0xBB: // Velocity data command
-        if (Serial.available() >= 8) { // Now there should be exactly 8 bytes for two floats
-          float vx, vy;
-          ledstatus = !ledstatus;
-          digitalWrite(LED_D2, ledstatus); // Toggle LED to indicate data processing
-          Serial.readBytes((byte*)&vx, 4); // Read the most recent vx
-          Serial.readBytes((byte*)&vy, 4); // Read the most recent vy
-          // Send the most recent vx and vy via UDP
-          udp.beginPacket(host, port);
-          udp.write((byte*)&vx, 4);
-          udp.write((byte*)&vy, 4);
-          udp.endPacket();
-        }
-        break;
-      default: // Other commands
-        ledstatus = !ledstatus;
-        delay(500);
-        digitalWrite(LED_D2, ledstatus); // Toggle LED to indicate other command processing
-        break;
+  while (Serial.available()) {
+    byte incomingByte = Serial.read();
+    if (!collecting) {
+      if (incomingByte == 0xAA) { // Start byte detected
+        collecting = true;
+        dataIndex = 0;
+      }
+    } else {
+      if (incomingByte == 0x55 && dataIndex == 8) { // End byte detected
+        float vx, vy;
+        memcpy(&vx, &data[0], sizeof(vx));
+        memcpy(&vy, &data[4], sizeof(vy));
+
+        // Send vx and vy via UDP
+        udp.beginPacket(host, port);
+        udp.write((byte*)&vx, 4);
+        udp.write((byte*)&vy, 4);
+        udp.endPacket();
+        
+        digitalWrite(LED_D2, !digitalRead(LED_D2)); // Toggle LED to indicate data sent
+
+        collecting = false; // Reset for next packet
+      } else if (dataIndex < 8) {
+        data[dataIndex++] = incomingByte; // Collect data bytes
+      } else {
+        // Packet format error, reset
+        collecting = false;
+      }
     }
   }
 
@@ -69,4 +72,3 @@ void loop() {
     digitalWrite(LED_BLINK, LOW);
   }
 }
-

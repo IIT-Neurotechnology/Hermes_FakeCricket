@@ -6,10 +6,11 @@ import struct
 
 def send_velocity(vx, vy, ser):
     # Prepend the command byte for velocity data
-    command_byte = b'\xBB'
+    start_byte = b'\xAA'
+    end_byte = b'\x55'
     velocity_data = struct.pack('<ff', vx, vy)  # Pack vx and vy as floats
     # Combine command byte with velocity data
-    message = command_byte + velocity_data
+    message = start_byte + velocity_data + end_byte
     # Send the combined message using the existing connection
     ser.write(message)
 
@@ -20,17 +21,38 @@ ser2 = serial.Serial(teensy_port, 115200, timeout=1)
 
 
 def read_joystick_values():
-    # Check if more than 8 bytes are waiting, keep only the latest 8 bytes
-    while ser2.in_waiting > 8:
-        # Read and discard all but the last 8 bytes
-        ser2.read(ser2.in_waiting - 8)
+    start_byte_found = False
+    message_buffer = bytearray()
 
-    if ser2.in_waiting == 8:
-        data = ser2.read(8)
-        vx, vy = struct.unpack('<ff', data)
-        return vx, vy
-    else:
-        return None, None
+    # Discard older bytes if more than 20 bytes are in the buffer.
+    if ser2.in_waiting > 20:
+        ser2.read(ser2.in_waiting - 20)
+
+    # Read through the available data to find the latest complete packet.
+    while ser2.in_waiting:
+        byte = ser2.read(1)
+        if not start_byte_found:
+            # Look for the start byte
+            if byte == b'\xAA':
+                start_byte_found = True
+                message_buffer = bytearray()  # Reset buffer upon finding start byte
+        else:
+            # Start byte found, now reading message until end byte
+            if byte == b'\x55':  # End byte found
+                if len(message_buffer) == 8:
+                    # Ensure we have exactly 8 bytes for two floats (vx, vy)
+                    vx, vy = struct.unpack('<ff', message_buffer)
+                    return vx, vy
+                # If the packet is not exactly 8 bytes, reset and continue looking.
+                start_byte_found = False
+                message_buffer = bytearray()
+            else:
+                # Accumulate the message bytes
+                message_buffer.append(byte[0])
+
+    # If exiting the loop without finding a complete packet, return None.
+    return None, None
+
 
 
 
@@ -44,6 +66,6 @@ if firebeetle_port and teensy_port:
         if vx is not None and vy is not None:  # Valid data received
             print(f"Joystick X: {vx}, Y: {vy}")  # Print the joystick values
             send_velocity(vx, vy, ser)  # Use the persistent serial connection
-            time.sleep(0.2)
+            #time.sleep(0.1)
 else:
     print("Device not found or not connected")

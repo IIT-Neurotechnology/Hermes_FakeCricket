@@ -37,23 +37,54 @@ void setMotorsSpeed(int vx, int vy, int w);
 
 void loop()
 {
-  if (Serial4.available() >= 8)
+  static bool startFound = false;
+  static byte incomingBuffer[8];
+  static int bufferIndex = 0;
+
+  while (Serial4.available() > 0)
   {
-    float vx, vy;
-    // Read the velocities from Serial4
-    Serial4.readBytes((char *)&vx, sizeof(vx));
-    Serial4.readBytes((char *)&vy, sizeof(vy));
+    byte incomingByte = Serial4.read();
 
-    // Use the velocities as needed
-    setMotorsSpeed(vx*250, vy*250, 0); // Example usage
+    // Look for start byte
+    if (!startFound && incomingByte == 0xAA)
+    {
+      startFound = true; // Start byte found, start collecting the data
+      bufferIndex = 0;   // Reset buffer index
+    }
+    else if (startFound)
+    {
+      // Check if we've reached the end byte
+      if (incomingByte == 0x55 && bufferIndex == 8)
+      {
+        // We've found a complete packet, process it
+        float vx, vy;
+        memcpy(&vx, &incomingBuffer[0], sizeof(vx));
+        memcpy(&vy, &incomingBuffer[4], sizeof(vy));
 
-    // For debugging, print the velocities to the Serial Monitor
-    Serial.print("Velocity X: ");
-    Serial.print(vx);
-    Serial.print(", Velocity Y: ");
-    Serial.println(vy);
+        // Use the velocities as needed
+        setMotorsSpeed(vx * 250, vy * 250, 0); // Example usage
+
+        // For debugging, print the velocities to the Serial Monitor
+        Serial.print("Velocity X: ");
+        Serial.print(vx);
+        Serial.print(", Velocity Y: ");
+        Serial.println(vy);
+
+        startFound = false; // Reset for the next packet
+        continue;           // Skip the rest of the loop
+      }
+      else if (bufferIndex < 8)
+      {
+        // Collect data into buffer
+        incomingBuffer[bufferIndex++] = incomingByte;
+      }
+      else
+      {
+        // If we get here, something went wrong (we never found the end byte)
+        startFound = false; // Reset and look for a new start byte
+      }
+    }
   }
-
 }
 
 // Helper function to set motor speeds based on desired vx, vy, and w

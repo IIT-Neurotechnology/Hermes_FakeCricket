@@ -34,15 +34,18 @@ void loop() {
     UDP.read((char*)&vx, sizeof(vx)); // Read the first float (velocity x)
     UDP.read((char*)&vy, sizeof(vy)); // Read the second float (velocity y)
     
-    // You can use vx and vy directly now, for example, printing them
-    Serial.print("Velocity X: ");
-    Serial.print(vx);
-    Serial.print(", Velocity Y: ");
-    Serial.println(vy);
-    //Serial.write((byte*)&vx, sizeof(vx));
-    //Serial.write((byte*)&vy, sizeof(vy));
-    delay(1);
-        // Clear any remaining bytes in the buffer to prevent overflow
+    // Start byte to indicate the beginning of a new packet
+    byte startByte = 0xAA;
+    // End byte to indicate the end of the packet
+    byte endByte = 0x55;
+    
+    // Send data over Serial to Teensy with start and end bytes
+    Serial.write(startByte);
+    Serial.write((byte*)&vx, sizeof(vx)); // vx float
+    Serial.write((byte*)&vy, sizeof(vy)); // vy float
+    Serial.write(endByte);
+
+    // Clear any remaining bytes in the UDP buffer to prevent overflow
     while (UDP.available()) {
       UDP.read();
     }
