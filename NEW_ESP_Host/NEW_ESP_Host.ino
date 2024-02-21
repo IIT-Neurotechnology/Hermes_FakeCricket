@@ -31,35 +31,37 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0) {
-    byte command = Serial.read(); // Read the command byte
+    // Check if there's more data than needed for a single command and its data
+
+    byte command = Serial.read(); // Now read the latest command byte
     switch (command) {
       case 0xAA: // Handshake command
         Serial.write(0xAA); // Echo back the handshake byte
         digitalWrite(LED_D2, LOW); // Indicate handshake received
         break;
       case 0xBB: // Velocity data command
-        if (Serial.available() >= 8) { // Ensure there's enough data for two floats
+        if (Serial.available() >= 8) { // Now there should be exactly 8 bytes for two floats
           float vx, vy;
-          ledstatus= !ledstatus;
-          digitalWrite(LED_D2, ledstatus); // Indicate handshake received
-          Serial.readBytes((byte*)&vx, 4); // Read the first float (vx)
-          Serial.readBytes((byte*)&vy, 4); // Read the second float (vy)
-          // Here, implement what you want to do with vx and vy, e.g., send via UDP
+          ledstatus = !ledstatus;
+          digitalWrite(LED_D2, ledstatus); // Toggle LED to indicate data processing
+          Serial.readBytes((byte*)&vx, 4); // Read the most recent vx
+          Serial.readBytes((byte*)&vy, 4); // Read the most recent vy
+          // Send the most recent vx and vy via UDP
           udp.beginPacket(host, port);
           udp.write((byte*)&vx, 4);
           udp.write((byte*)&vy, 4);
           udp.endPacket();
         }
         break;
-      default: // Turn off program command
-        // Implement the shutdown or reset logic here
-        ledstatus= !ledstatus;
-        digitalWrite(LED_D2, ledstatus); // Use LED to indicate shutdown
-        delay(10);
+      default: // Other commands
+        ledstatus = !ledstatus;
+        delay(500);
+        digitalWrite(LED_D2, ledstatus); // Toggle LED to indicate other command processing
         break;
-      // Add more cases as needed for other commands
     }
   }
+
+  // Check Wi-Fi status
   if (WiFi.status() != WL_CONNECTED) { 
     digitalWrite(LED_BLINK, HIGH);
     delay(100);
@@ -67,3 +69,4 @@ void loop() {
     digitalWrite(LED_BLINK, LOW);
   }
 }
+
