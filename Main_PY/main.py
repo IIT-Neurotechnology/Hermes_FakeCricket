@@ -15,8 +15,8 @@ def send_velocity(vx, vy, ser):
     ser.write(message)
 
 
-teensy_port = 'COM11'  # Placeholder - replace with your actual Teensy port
-firebeetle_port = 'COM12'
+teensy_port = 'COM28'  # Placeholder - replace with your actual Teensy port
+firebeetle_port = 'COM29'
 ser2 = serial.Serial(teensy_port, 115200, timeout=1)
 
 
@@ -65,7 +65,7 @@ if firebeetle_port and teensy_port:
         vx, vy = read_joystick_values()
         if vx is not None and vy is not None:  # Valid data received
             print(f"Joystick X: {vx}, Y: {vy}")  # Print the joystick values
-            send_velocity(vx, vy, ser)  # Use the persistent serial connection
+            send_velocity(vx, -vy, ser)  # Use the persistent serial connection
             #time.sleep(0.1)
 else:
     print("Device not found or not connected")
