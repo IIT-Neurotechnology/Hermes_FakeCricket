@@ -19,20 +19,18 @@ const int  STBY2 = 25;
 #define STBY 9
 #define CIN1 11
 #define CIN2 12
-#define PWMC 29
-
+#define PWMC 36
 
 Motor motor1(AIN1, AIN2, PWMA, offsetA, STBY);
 Motor motor2(BIN1, BIN2, PWMB, offsetB, STBY);
-Motor motor3(CIN1, CIN2, PWMC, offsetC, STBY2);
+Motor motor3(CIN1, CIN2, PWMC, offsetC, STBY);
 
 // Constants and motor setup code...
 void setMotorsSpeed(int vx, int vy, int w);
 
     void setup()
 {
-  Serial.begin(9600);
-  Serial4.begin(115200); // Initialize Serial4 (TX4/RX4) with the baud rate matching the sender
+  Serial1.begin(115200);
 }
 
 void loop()
@@ -41,9 +39,9 @@ void loop()
   static byte incomingBuffer[8];
   static int bufferIndex = 0;
 
-  while (Serial4.available() > 0)
+  while (Serial1.available() > 0)
   {
-    byte incomingByte = Serial4.read();
+    byte incomingByte = Serial1.read();
 
     // Look for start byte
     if (!startFound && incomingByte == 0xAA)
@@ -91,13 +89,13 @@ void loop()
 void setMotorsSpeed(int vx, int vy, int w)
 {
   std::array<int, 3> motorSpeeds = calculateMotorSpeeds(vx, vy, w);
-
-  Serial.print("Motor 1 Speed: ");
-  Serial.println(motorSpeeds[0]);
-  Serial.print("Motor 2 Speed: ");
-  Serial.println(motorSpeeds[1]);
-  Serial.print("Motor 3 Speed: ");
-  Serial.println(motorSpeeds[2]);
+  
+    Serial.print("Motor 1 Speed: ");
+    Serial.println(motorSpeeds[0]);
+    Serial.print("Motor 2 Speed: ");
+    Serial.println(motorSpeeds[1]);
+    Serial.print("Motor 3 Speed: ");
+    Serial.println(motorSpeeds[2]);
   motor1.drive(motorSpeeds[0]);
   motor2.drive(motorSpeeds[1]);
   motor3.drive(motorSpeeds[2]);

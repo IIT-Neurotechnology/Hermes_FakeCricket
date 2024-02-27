@@ -16,7 +16,7 @@ def send_velocity(vx, vy, ser):
 
 
 teensy_port = 'COM11'  # Placeholder - replace with your actual Teensy port
-firebeetle_port = 'COM17'
+firebeetle_port = 'COM12'
 ser2 = serial.Serial(teensy_port, 115200, timeout=1)
 
 
