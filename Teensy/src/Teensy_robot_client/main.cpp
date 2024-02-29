@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <SparkFun_TB6612.h>
 #include "cinematica.h"
+#include "IMUHandler.h"
+
 // these constants are used to allow you to make your motor configuration
 // line up with function names like forward.  Value can be 1 or -1
 const int offsetA = 1;
@@ -8,6 +10,8 @@ const int offsetB = 1;
 const int offsetC = -1;
 const int STBY = 9;
 const int  STBY2 = 25;
+
+IMUHandler imu; // Create an IMUHandler object
 
 // Pins for all inputs, keep in mind the PWM defines must be on PWM pins
 #define AIN1 2
@@ -31,6 +35,7 @@ void setMotorsSpeed(int vx, int vy, int w);
     void setup()
 {
   Serial1.begin(115200);
+  imu.setupIMU(); // Setup the IMU
 }
 
 void loop()
