@@ -2,6 +2,11 @@
 #include <SparkFun_TB6612.h>
 #include "cinematica.h"
 #include "IMUHandler.h"
+#include "Encoders_PID.h"
+
+const int encoderPins[] = {20, 21, 22, 23, 16, 17}; // MOTOR 1, MOTOR 2, MOTOR 3
+EncoderHandler encoder(encoderPins);
+
 
 // these constants are used to allow you to make your motor configuration
 // line up with function names like forward.  Value can be 1 or -1
@@ -35,6 +40,7 @@ void setMotorsSpeed(int vx, int vy, int w);
     void setup()
 {
   Serial1.begin(115200);
+  encoder.begin();
   //imu.setupIMU();
 }
 
