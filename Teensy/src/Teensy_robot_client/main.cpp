@@ -35,7 +35,7 @@ void setMotorsSpeed(int vx, int vy, int w);
     void setup()
 {
   Serial1.begin(115200);
-  imu.setupIMU(); // Setup the IMU
+  //imu.setupIMU();
 }
 
 void loop()

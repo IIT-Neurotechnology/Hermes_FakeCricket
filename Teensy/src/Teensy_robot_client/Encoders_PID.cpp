@@ -4,13 +4,12 @@
 #define NUM_ENCODERS 3
 
 double setPoints[NUM_ENCODERS] = {0, 0, 0}; // Desired speeds for each motor
-int dir[NUM_ENCODERS] = {0, 0, 0};
 double inputs[NUM_ENCODERS], outputs[NUM_ENCODERS], lastInputs[NUM_ENCODERS];
 // For each motor
 double errorSum[NUM_ENCODERS] = {0, 0, 0}, lastErr[NUM_ENCODERS];
 double err = 0;
 
-int encoder_pin[] = {7, 6, 5, 4, 3, 2};
+int encoder_pin[] = {20, 21, 22, 23, 16, 17};
 
 static const int transition_table[] = {
     0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0};
