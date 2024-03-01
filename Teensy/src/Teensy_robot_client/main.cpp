@@ -4,7 +4,7 @@
 #include "IMUHandler.h"
 #include "Encoders_PID.h"
 
-const int encoderPins[] = {20, 21, 22, 23, 16, 17}; // MOTOR 1, MOTOR 2, MOTOR 3
+const int encoderPins[] = {20, 21, 22, 23, 16, 17}; 
 EncoderHandler encoder(encoderPins);
 
 
@@ -34,7 +34,6 @@ Motor motor1(AIN1, AIN2, PWMA, offsetA, STBY);
 Motor motor2(BIN1, BIN2, PWMB, offsetB, STBY);
 Motor motor3(CIN1, CIN2, PWMC, offsetC, STBY);
 
-// Constants and motor setup code...
 void setMotorsSpeed(int vx, int vy, int w);
 
     void setup()
@@ -50,9 +49,9 @@ void loop()
   static byte incomingBuffer[8];
   static int bufferIndex = 0;
 
-  long int encoderCount1 = encoder.getEncoderCount(0); // Get count for encoder 1
-  long int encoderCount2 = encoder.getEncoderCount(1); // Get count for encoder 2
-  long int encoderCount3 = encoder.getEncoderCount(2); // Get count for encoder 3
+  long int encoderCount1 = encoder.getEncoderCount(0); 
+  long int encoderCount2 = encoder.getEncoderCount(1);
+  long int encoderCount3 = encoder.getEncoderCount(2);
   // Print the counts to the serial monitor
   delay(1000);
   Serial.print("Encoder 1 Count: ");
@@ -107,7 +106,6 @@ void loop()
   }
 }
 
-// Helper function to set motor speeds based on desired vx, vy, and w
 void setMotorsSpeed(int vx, int vy, int w)
 {
   std::array<int, 3> motorSpeeds = calculateMotorSpeeds(vx, vy, w);
@@ -124,10 +122,7 @@ void setMotorsSpeed(int vx, int vy, int w)
 
 }
 
-// Drive in direction given by sign, at speed given by magnitude of the
-// parameter.
 void drive(int speed);
-// drive(), but with a delay(duration)
 void drive(int speed, int duration);
 
 extern "C"
@@ -137,7 +132,7 @@ extern "C"
     // Implementation for write
     // For example, you could write data to the serial port
     if (file == 1)
-    { // STDOUT
+    {
       Serial.write((uint8_t *)ptr, len);
       return len;
     }

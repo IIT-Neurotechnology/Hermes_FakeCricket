@@ -5,7 +5,7 @@
 
 class EncoderHandler {
 public:
-    static const int NUM_ENCODERS = 3; // Adjust based on the number of encoders used
+    static const int NUM_ENCODERS = 3;
     static EncoderHandler* instance[NUM_ENCODERS]; // Static instances for ISR access
 
     // Constructor that initializes the encoder pins
