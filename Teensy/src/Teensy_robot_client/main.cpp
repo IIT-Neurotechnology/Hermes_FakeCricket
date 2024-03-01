@@ -14,7 +14,7 @@ const int offsetA = 1;
 const int offsetB = 1;
 const int offsetC = -1;
 const int STBY = 9;
-const int  STBY2 = 25;
+
 
 IMUHandler imu; // Create an IMUHandler object
 
@@ -50,6 +50,17 @@ void loop()
   static byte incomingBuffer[8];
   static int bufferIndex = 0;
 
+  long int encoderCount1 = encoder.getEncoderCount(0); // Get count for encoder 1
+  long int encoderCount2 = encoder.getEncoderCount(1); // Get count for encoder 2
+  long int encoderCount3 = encoder.getEncoderCount(2); // Get count for encoder 3
+  // Print the counts to the serial monitor
+  delay(1000);
+  Serial.print("Encoder 1 Count: ");
+  Serial.println(encoderCount1);
+  Serial.print("Encoder 2 Count: ");
+  Serial.println(encoderCount2);
+  Serial.print("Encoder 3 Count: ");
+  Serial.println(encoderCount3);
   while (Serial1.available() > 0)
   {
     byte incomingByte = Serial1.read();

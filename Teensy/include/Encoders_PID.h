@@ -15,12 +15,12 @@ public:
     void begin();
 
     // Static ISR handlers for each encoder pin
-    static void isrEncoder0A();
-    static void isrEncoder0B();
     static void isrEncoder1A();
     static void isrEncoder1B();
     static void isrEncoder2A();
     static void isrEncoder2B();
+    static void isrEncoder3A();
+    static void isrEncoder3B();
     // Add more ISR handlers if you have more than 3 encoders
 
     // Method to get the current count of the specified encoder
