@@ -1,5 +1,5 @@
 #pragma once
-#define ENCODERS_PID_H
+#define ENCODERS_H
 
 #include <Arduino.h>
 

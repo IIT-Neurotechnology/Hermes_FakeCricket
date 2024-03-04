@@ -2,7 +2,7 @@
 #include <SparkFun_TB6612.h>
 #include "cinematica.h"
 #include "IMUHandler.h"
-#include "Encoders_PID.h"
+#include "Encoders.h"
 
 const int encoderPins[] = {20, 21, 22, 23, 16, 17}; 
 EncoderHandler encoder(encoderPins);
