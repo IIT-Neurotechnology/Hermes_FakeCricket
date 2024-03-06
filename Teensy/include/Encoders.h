@@ -35,3 +35,27 @@ private:
     // Method to update the encoder count, called by the ISR handlers
     void updateEncoder(int index);
 };
+
+// Previous encoder counts for each motor
+long prevEncoderCount1 = 0, prevEncoderCount2 = 0, prevEncoderCount3 = 0;
+// Last time the speed was calculated for each motor, in milliseconds
+unsigned long lastSpeedCalculationTime1 = 0, lastSpeedCalculationTime2 = 0, lastSpeedCalculationTime3 = 0;
+
+double calculateSpeed(long currentEncoderCount, long &prevEncoderCount, unsigned long &lastSpeedCalculationTime) {
+  unsigned long currentTime = millis();
+  unsigned long timeDelta = currentTime - lastSpeedCalculationTime; // Time since last speed calculation in milliseconds
+  
+  if(timeDelta > 0) { // Prevent division by zero
+    long countDelta = currentEncoderCount - prevEncoderCount; // Change in encoder count
+    double speed = (countDelta / (double)timeDelta) * 1000.0; // Speed in counts per second
+    
+    // Update for next calculation
+    prevEncoderCount = currentEncoderCount;
+    lastSpeedCalculationTime = currentTime;
+    
+    return speed;
+  }
+  
+  return 0; // Return 0 if called again before time has passed
+}
+

@@ -3,6 +3,7 @@
 #include "cinematica.h"
 #include "IMUHandler.h"
 #include "Encoders.h"
+#include "PIDController.h"
 
 const int encoderPins[] = {20, 21, 22, 23, 16, 17}; 
 EncoderHandler encoder(encoderPins);
@@ -34,6 +35,10 @@ Motor motor1(AIN1, AIN2, PWMA, offsetA, STBY);
 Motor motor2(BIN1, BIN2, PWMB, offsetB, STBY);
 Motor motor3(CIN1, CIN2, PWMC, offsetC, STBY);
 
+PIDController motor1PID(2.0, 5.0, 1.0);
+PIDController motor2PID(2.5, 4.5, 1.2);
+PIDController motor3PID(2.2, 4.8, 1.1);
+
 void setMotorsSpeed(int vx, int vy, int w);
 
     void setup()
@@ -52,6 +57,9 @@ void loop()
   long int encoderCount1 = encoder.getEncoderCount(0); 
   long int encoderCount2 = encoder.getEncoderCount(1);
   long int encoderCount3 = encoder.getEncoderCount(2);
+  double currentSpeed1 = calculateSpeed(encoder.getEncoderCount(0));
+  double currentSpeed2 = calculateSpeed(encoder.getEncoderCount(1));
+  double currentSpeed3 = calculateSpeed(encoder.getEncoderCount(2));
   // Print the counts to the serial monitor
   delay(1000);
   Serial.print("Encoder 1 Count: ");
@@ -60,6 +68,10 @@ void loop()
   Serial.println(encoderCount2);
   Serial.print("Encoder 3 Count: ");
   Serial.println(encoderCount3);
+
+  double controlSignal1 = motor1PID.update(currentSpeed1);
+  double controlSignal2 = motor2PID.update(currentSpeed2);
+  double controlSignal3 = motor3PID.update(currentSpeed3);
   while (Serial1.available() > 0)
   {
     byte incomingByte = Serial1.read();
