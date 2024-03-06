@@ -81,9 +81,8 @@ void loop()
         memcpy(&vy, &incomingBuffer[4], sizeof(vy));
 
         // Use the velocities as needed
-        setMotorsSpeed(vx * 250, vy * 250, 0); // Example usage
+        setMotorsSpeed(vx * 250, vy * 250, 0);
 
-        // For debugging, print the velocities to the Serial Monitor
         Serial.print("Velocity X: ");
         Serial.print(vx);
         Serial.print(", Velocity Y: ");
