@@ -1,6 +1,5 @@
 #pragma once
 #define ENCODERS_H
-
 #include <Arduino.h>
 
 class EncoderHandler {

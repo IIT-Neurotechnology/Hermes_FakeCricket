@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
+#include "Arduino.h"
 #include "SparkFun_ISM330DHCX.h" // Include the library for the IMU
 
 class IMUHandler {

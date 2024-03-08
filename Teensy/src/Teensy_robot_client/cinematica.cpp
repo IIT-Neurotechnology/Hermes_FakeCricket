@@ -1,4 +1,3 @@
-// my_functions.cpp
 #include "cinematica.h"
 #include <iostream>
 #include <algorithm>
