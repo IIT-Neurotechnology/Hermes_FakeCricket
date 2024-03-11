@@ -3,6 +3,9 @@
 // Initialize static instance pointers to nullptr
 EncoderHandler* EncoderHandler::instance[EncoderHandler::NUM_ENCODERS] = {nullptr};
 
+long EncoderHandler::prevEncoderCount1 = 0, EncoderHandler::prevEncoderCount2 = 0, EncoderHandler::prevEncoderCount3 = 0;
+unsigned long EncoderHandler::lastSpeedCalculationTime1 = 0, EncoderHandler::lastSpeedCalculationTime2 = 0, EncoderHandler::lastSpeedCalculationTime3 = 0;
+
 // Transition table for quadrature encoders
 const int EncoderHandler::transitionTable[] = {
     0, 1, -1, 0,
@@ -38,6 +41,24 @@ void EncoderHandler::begin() {
         }
         // Add additional else-if blocks for more encoders if necessary
     }
+}
+
+double EncoderHandler::calculateSpeed(long currentEncoderCount, long &prevEncoderCount, unsigned long &lastSpeedCalculationTime) {
+    unsigned long currentTime = millis();
+    unsigned long timeDelta = currentTime - lastSpeedCalculationTime; // Time since last speed calculation in milliseconds
+    
+    if(timeDelta > 0) { // Prevent division by zero
+        long countDelta = currentEncoderCount - prevEncoderCount; // Change in encoder count
+        double speed = (countDelta / (double)timeDelta) * 1000.0; // Speed in counts per second
+        
+        // Update for next calculation
+        prevEncoderCount = currentEncoderCount;
+        lastSpeedCalculationTime = currentTime;
+        
+        return speed;
+    }
+    
+    return 0; // Return 0 if called again before time has passed
 }
 
 // Static ISR methods for each encoder pin

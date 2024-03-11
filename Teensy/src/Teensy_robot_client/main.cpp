@@ -52,9 +52,10 @@ void loop()
   static bool startFound = false;
   static byte incomingBuffer[12];
   static int bufferIndex = 0;
-  double currentSpeed1 = calculateSpeed(encoder.getEncoderCount(0),prevEncoderCount1,lastSpeedCalculationTime1);
-  double currentSpeed2 = calculateSpeed(encoder.getEncoderCount(1),prevEncoderCount2,lastSpeedCalculationTime2);
-  double currentSpeed3 = calculateSpeed(encoder.getEncoderCount(2),prevEncoderCount3,lastSpeedCalculationTime3);
+  double currentSpeed1 = EncoderHandler::calculateSpeed(encoder.getEncoderCount(0), EncoderHandler::prevEncoderCount1, EncoderHandler::lastSpeedCalculationTime1);
+  double currentSpeed2 = EncoderHandler::calculateSpeed(encoder.getEncoderCount(1), EncoderHandler::prevEncoderCount2, EncoderHandler::lastSpeedCalculationTime2);
+  double currentSpeed3 = EncoderHandler::calculateSpeed(encoder.getEncoderCount(2), EncoderHandler::prevEncoderCount3, EncoderHandler::lastSpeedCalculationTime3);
+
   while (Serial1.available() > 0)
   {
     byte incomingByte = Serial1.read();
