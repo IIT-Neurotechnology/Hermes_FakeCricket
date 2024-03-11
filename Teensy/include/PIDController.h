@@ -1,6 +1,5 @@
 #pragma once
 #define PIDController_h
-
 #include "Arduino.h"
 
 class PIDController {
