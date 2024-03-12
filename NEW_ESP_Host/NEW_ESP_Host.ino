@@ -30,7 +30,7 @@ void setup() {
 
 void loop() {
   static bool collecting = false;
-  static byte data[8];
+  static byte data[12];
   static int dataIndex = 0;
 
   while (Serial.available()) {
@@ -41,21 +41,23 @@ void loop() {
         dataIndex = 0;
       }
     } else {
-      if (incomingByte == 0x55 && dataIndex == 8) { // End byte detected
-        float vx, vy;
+      if (incomingByte == 0x55 && dataIndex == 12) { // End byte detected
+        float vx, vy, w;
         memcpy(&vx, &data[0], sizeof(vx));
         memcpy(&vy, &data[4], sizeof(vy));
+        memcpy(&w,  &data[8], sizeof(w));
 
         // Send vx and vy via UDP
         udp.beginPacket(host, port);
         udp.write((byte*)&vx, 4);
         udp.write((byte*)&vy, 4);
+        udp.write((byte*)&w, 4);
         udp.endPacket();
         
         digitalWrite(LED_D2, !digitalRead(LED_D2)); // Toggle LED to indicate data sent
 
         collecting = false; // Reset for next packet
-      } else if (dataIndex < 8) {
+      } else if (dataIndex < 12) {
         data[dataIndex++] = incomingByte; // Collect data bytes
       } else {
         // Packet format error, reset

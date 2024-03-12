@@ -1,6 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-
+//Questo e il programma che sta sul robot per il controllore wireless
 // WiFi and UDP settings
 const char* ssid = "Robocricket_AP";
 const char* password = "Jiminy_AP";
@@ -29,10 +29,11 @@ void setup() {
 
 void loop() {
   int packetSize = UDP.parsePacket();
-  if (packetSize >= sizeof(float) * 2) { // Ensure the packet contains at least two floats
-    float vx, vy;
+  if (packetSize >= sizeof(float) * 3) { // Ensure the packet contains at least two floats
+    float vx, vy, w;
     UDP.read((char*)&vx, sizeof(vx)); // Read the first float (velocity x)
     UDP.read((char*)&vy, sizeof(vy)); // Read the second float (velocity y)
+    UDP.read((char*)&w, sizeof(w)); // Read the third float (angular velocity w)
     
     // Start byte to indicate the beginning of a new packet
     byte startByte = 0xAA;
@@ -43,6 +44,7 @@ void loop() {
     Serial.write(startByte);
     Serial.write((byte*)&vx, sizeof(vx)); // vx float
     Serial.write((byte*)&vy, sizeof(vy)); // vy float
+    Serial.write((byte*)&w, sizeof(w)); // w float
     Serial.write(endByte);
 
     // Clear any remaining bytes in the UDP buffer to prevent overflow

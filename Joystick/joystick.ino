@@ -12,6 +12,7 @@ void loop() {
   // Map the analog read values from the joystick (0 to 1023) to velocity (-1.0 to 1.0)
   float vx = abs(joystickX - 512) < 15 ? 0 : map(joystickX, 0, 1023, -100, 100) / 100.0;
   float vy = abs(joystickY - 512) < 15 ? 0 : map(joystickY, 0, 1023, -100, 100) / 100.0;
+  float w=0;
 
   // Start byte to indicate the beginning of a new packet
   byte startByte = 0xAA;
@@ -22,6 +23,7 @@ void loop() {
   Serial.write(startByte);
   Serial.write((byte*)&vx, sizeof(vx));
   Serial.write((byte*)&vy, sizeof(vy));
+  Serial.write((byte*)&w, sizeof(w));
   Serial.write(endByte);
 
 }

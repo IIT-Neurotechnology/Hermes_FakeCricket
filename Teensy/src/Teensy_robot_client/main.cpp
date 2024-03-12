@@ -33,9 +33,9 @@ Motor motor1(AIN1, AIN2, PWMA, offsetA, STBY);
 Motor motor2(BIN1, BIN2, PWMB, offsetB, STBY);
 Motor motor3(CIN1, CIN2, PWMC, offsetC, STBY);
 
-PIDController motor1PID(2.0, 5.0, 1.0);
-PIDController motor2PID(2.5, 4.5, 1.2);
-PIDController motor3PID(2.2, 4.8, 1.1);
+PIDController motor1PID(2.0, 4.8, 1.1);
+PIDController motor2PID(2.0, 4.8, 1.1);
+PIDController motor3PID(2.0, 4.8, 1.1);
 
 void setMotorsSpeed(int vx, int vy, int w);
 void setMotorsSpeed_PID(int vx, int vy, int w,double currentSpeed1, double currentSpeed2, double currentSpeed3);
