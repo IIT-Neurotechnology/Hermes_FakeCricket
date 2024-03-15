@@ -3,12 +3,11 @@ import serial.tools.list_ports
 import time
 import struct
 
-
-def send_velocity(vx, vy, ser):
+def send_velocity(vx, vy, w,ser):
     # Prepend the command byte for velocity data
     start_byte = b'\xAA'
     end_byte = b'\x55'
-    velocity_data = struct.pack('<ff', vx, vy)  # Pack vx and vy as floats
+    velocity_data = struct.pack('<ff', vx, vy, w)  # Pack vx and vy and w as floats
     # Combine command byte with velocity data
     message = start_byte + velocity_data + end_byte
     # Send the combined message using the existing connection
@@ -39,10 +38,10 @@ def read_joystick_values():
         else:
             # Start byte found, now reading message until end byte
             if byte == b'\x55':  # End byte found
-                if len(message_buffer) == 8:
-                    # Ensure we have exactly 8 bytes for two floats (vx, vy)
-                    vx, vy = struct.unpack('<ff', message_buffer)
-                    return vx, vy
+                if len(message_buffer) == 12:
+                    # Ensure we have exactly 12 bytes for three floats (vx, vy, w)
+                    vx, vy, w = struct.unpack('<ff', message_buffer)
+                    return vx, vy , w
                 # If the packet is not exactly 8 bytes, reset and continue looking.
                 start_byte_found = False
                 message_buffer = bytearray()
@@ -62,10 +61,11 @@ if firebeetle_port and teensy_port:
     print(f"ESP8266 found at {firebeetle_port}")
     print(f"Teensy found at {teensy_port}")
     while True:
+        w=0
         vx, vy = read_joystick_values()
         if vx is not None and vy is not None:  # Valid data received
-            print(f"Joystick X: {vx}, Y: {vy}")  # Print the joystick values
-            send_velocity(vx, -vy, ser)  # Use the persistent serial connection
+            print(f"Joystick X: {vx}, Y: {vy}, W:{w}")  # Print the joystick values
+            send_velocity(vx, -vy, w, ser)  # Use the persistent serial connection
             #time.sleep(0.1)
 else:
     print("Device not found or not connected")
