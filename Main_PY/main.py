@@ -24,8 +24,8 @@ def read_joystick_values():
     message_buffer = bytearray()
 
     # Discard older bytes if more than 20 bytes are in the buffer.
-    if ser2.in_waiting > 20:
-        ser2.read(ser2.in_waiting - 20)
+    if ser2.in_waiting > 24:
+        ser2.read(ser2.in_waiting - 24)
 
     # Read through the available data to find the latest complete packet.
     while ser2.in_waiting:
@@ -42,7 +42,7 @@ def read_joystick_values():
                     # Ensure we have exactly 12 bytes for three floats (vx, vy, w)
                     vx, vy, w = struct.unpack('<ff', message_buffer)
                     return vx, vy , w
-                # If the packet is not exactly 8 bytes, reset and continue looking.
+                # If the packet is not exactly 12 bytes, reset and continue looking.
                 start_byte_found = False
                 message_buffer = bytearray()
             else:
