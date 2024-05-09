@@ -1,4 +1,5 @@
 # Robocricket_Hermes
+![thumbnail_d5b9b2e3-0b14-4333-bd85-6a36017eb567](https://github.com/IIT-Neurotechnology/Hermes_FakeCricket/assets/135230111/1d1dafbe-7662-4f35-b5c6-8ebbfd60502e)
 
 ## Description
 This project is a sophisticated robotic system designed for precision motion control, utilizing a combination of motor encoders, an Inertial Measurement Unit (IMU), and Proportional-Integral-Derivative (PID) controllers for accurate real-time adjustments. It features a modular codebase that includes support for motor speed calculations, IMU data handling, encoder feedback processing, and PID control for optimal motion performance.
