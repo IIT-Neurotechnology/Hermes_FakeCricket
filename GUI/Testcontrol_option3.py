@@ -5,30 +5,7 @@ import customtkinter
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
-class PreAppDialog(customtkinter.CTkToplevel):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.title("Robocricket GUI")
-        self.geometry("350x250")
-        self.grab_set()  # Make this window modal
-
-        self.label = customtkinter.CTkLabel(self, text="Choose an option to start the app:", font=customtkinter.CTkFont(size=20))
-        self.label.pack(pady=20)
-
-        self.option1_button = customtkinter.CTkButton(self, text="Live Experiment", command=lambda: self.on_button_click("Live Experiment"))
-        self.option1_button.pack(pady=10)
-
-        self.option2_button = customtkinter.CTkButton(self, text="Video Analysis", command=lambda: self.on_button_click("Video Analysis"))
-        self.option2_button.pack(pady=10)
-        
-        self.option3_button = customtkinter.CTkButton(self, text="Test Control", command=lambda: self.on_button_click("Test Control"))
-        self.option3_button.pack(pady=10)
-
-    def on_button_click(self, option):
-        print(f"{option} selected")
-        self.destroy()  # Close the dialog
-
-class App(customtkinter.CTk):
+class AppOption3(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
@@ -184,7 +161,5 @@ class App(customtkinter.CTk):
 if __name__ == "__main__":
     root = customtkinter.CTk()
     root.withdraw()  # Hide the root window
-    dialog = PreAppDialog(root)
-    root.wait_window(dialog)  # Wait for the dialog to close
-    app = App()
+    app = AppOption3()
     app.mainloop()
